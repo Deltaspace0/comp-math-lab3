@@ -13,7 +13,7 @@ import Model
 
 buildUI :: UIBuilder AppModel AppEvent
 buildUI _ model = tree where
-    tree = hstack_ [childSpacing_ 64]
+    tree = hstack_ [childSpacing_ 16]
         [ graphWithData_ points
             [ lockX_ $ model ^. xLock
             , lockY_ $ model ^. yLock
@@ -32,15 +32,27 @@ buildUI _ model = tree where
                 labeledCheckbox "Extend quadratic polys" extendS
             , separatorLine
             , hgrid_ [childSpacing_ 64]
-                [ label $ "a = " <> (showt a)
+                [ hstack_ [childSpacing_ 16]
+                    [ label "a = "
+                    , numericField pointA
+                    ]
                 , button "Reset" AppResetA
                 ]
             , hgrid_ [childSpacing_ 64]
-                [ label $ "b = " <> (showt b)
+                [ hstack_ [childSpacing_ 16]
+                    [ label "b = "
+                    , numericField pointB
+                    ]
                 , button "Reset" AppResetB
                 ]
             , hgrid_ [childSpacing_ 64]
-                [ label $ "e = " <> (showt e)
+                [ hstack_ [childSpacing_ 16]
+                    [ label "e = "
+                    , numericField_ accuracy
+                        [ decimals 5
+                        , minValue 0.00001
+                        ]
+                    ]
                 , button "Reset" AppResetAccuracy
                 ]
             , enhancedSlider_ calcN 1 42
@@ -78,11 +90,6 @@ buildUI _ model = tree where
             , graphWidth 4
             , graphSeparate
             , graphOnChange AppChangePointB
-            ]
-        ,   [ graphPoint (e, 0)
-            , graphColor black
-            , graphSeparate
-            , graphOnChange AppChangeAccuracy
             ]
         ] <> (makeShape . fromIntegral <$> [0..n-1]) <> simps
     makeShape i =
@@ -127,7 +134,6 @@ buildUI _ model = tree where
     h = (b-a)/(fromIntegral n)
     a = round' $ model ^. pointA
     b = round' $ model ^. pointB
-    e = round' $ model ^. accuracy
     integral = round' $ model ^. currentResult
     prev = round' $ fromJust $ model ^. prevResult
     round' x = (fromIntegral $ (round (x*bn) :: Int))/bn

@@ -72,5 +72,4 @@ functions =
     , (\x -> x, "f(x) = x")
     , (\x -> (log x)*(cos x), "f(x) = ln(x)cos(x)" )
     , (\x -> 1/x, "f(x) = 1/x")
-    , (\x -> (1-x**2)**0.5, "f(x) = sqrt(1-x^2)")
     ]
