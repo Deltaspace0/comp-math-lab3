@@ -26,7 +26,8 @@ buildUI _ model = tree where
                 , labeledCheckbox "Lock Y" yLock
                 ]
             , separatorLine
-            , dropdown calcMethod methods methodTitle methodTitle
+            , dropdown_ calcMethod methods methodTitle methodTitle
+                [onChange $ (const AppInit :: Method -> AppEvent)]
             , dropdown currentFunction [0..length functions-1] et et
             , widgetIf (model ^. calcMethod == Simpson) $
                 labeledCheckbox "Extend quadratic polys" extendS
