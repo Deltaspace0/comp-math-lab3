@@ -27,7 +27,7 @@ buildUI _ model = tree where
                 ]
             , separatorLine
             , dropdown_ calcMethod methods methodTitle methodTitle
-                [onChange $ (const AppInit :: Method -> AppEvent)]
+                [onChange (const AppInit :: Method -> AppEvent)]
             , dropdown currentFunction [0..length functions-1] et et
             , widgetIf (model ^. calcMethod == Simpson) $
                 labeledCheckbox "Extend quadratic polys" extendS
@@ -35,14 +35,16 @@ buildUI _ model = tree where
             , hgrid_ [childSpacing_ 64]
                 [ hstack_ [childSpacing_ 16]
                     [ label "a = "
-                    , numericField pointA
+                    , numericField_ pointA [onChange
+                        (const AppInit :: Double -> AppEvent)]
                     ]
                 , button "Reset" AppResetA
                 ]
             , hgrid_ [childSpacing_ 64]
                 [ hstack_ [childSpacing_ 16]
                     [ label "b = "
-                    , numericField pointB
+                    , numericField_ pointB [onChange
+                        (const AppInit :: Double -> AppEvent)]
                     ]
                 , button "Reset" AppResetB
                 ]
@@ -52,6 +54,8 @@ buildUI _ model = tree where
                     , numericField_ accuracy
                         [ decimals 5
                         , minValue 0.00001
+                        , onChange
+                            (const AppInit :: Double -> AppEvent)
                         ]
                     ]
                 , button "Reset" AppResetAccuracy
@@ -137,7 +141,7 @@ buildUI _ model = tree where
     b = round' $ model ^. pointB
     integral = round' $ model ^. currentResult
     prev = round' $ fromJust $ model ^. prevResult
-    round' x = (fromIntegral $ (round (x*bn) :: Int))/bn
+    round' x = (fromIntegral $ (round (x*bn) :: Integer))/bn
     bn = 1000000
     n = model ^. calcN
     f = fst $ functions!!(model ^. currentFunction)
